@@ -3,18 +3,36 @@
  */
 package quotes;
 
+import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.io.*;
+
+import java.lang.reflect.Type;
+import java.net.HttpURLConnection;
+
 import java.net.HttpURLConnection;
 import java.net.URL;
+
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.net.URL;
+import java.util.Collection;
 
 public class App {
 
 
     public static void main(String[] args) throws IOException {
+
+        Gson gson = new Gson();
+        RecentQuotes quotes = new RecentQuotes("Charles Dickens", "Hello?");
+        System.out.println(quotes);
+        Reader quoteReader = Files.newBufferedReader(Paths.get("src/main/resources/recentQuotes.json"));
+        RecentQuotes[] numQuotes = gson.fromJson(quoteReader, RecentQuotes[].class);
+        System.out.println(quotes.stringify(getRandomNumber(0, 138), numQuotes));
+//        addQuoteToFile(quotes);
+
         try {
             //Ron Swanson Quotes: https://ron-swanson-quotes.herokuapp.com/v2/quotes
             URL url = new URL("http://swquotesapi.digitaljedi.dk/api/SWQuote/RandomStarWarsQuote");
@@ -50,10 +68,55 @@ public class App {
             System.out.println(quotes.stringify(getRandomNumber(0, 138), numQuotes));
         }
 
+
     }
 
     public static int getRandomNumber(int min, int max) {
         return (int) ((Math.random() * (max - min)) + min);
     }
 
+    public static String getInternetQuote() throws IOException {
+
+        URL url = new URL("http://ron-swanson-quotes.herokuapp.com/v2/quotes");
+        HttpURLConnection connect = (HttpURLConnection) url.openConnection();
+        connect.setRequestMethod("GET");
+        BufferedReader input = new BufferedReader(new InputStreamReader(connect.getInputStream()));
+        String oneLine = input.readLine();
+        StringBuffer entireStringFromResponse = new StringBuffer();
+        System.out.println(oneLine);
+
+        while(oneLine != null){
+            entireStringFromResponse.append(oneLine);
+            oneLine = input.readLine();
+        }
+
+        input.close();
+        System.out.println(entireStringFromResponse);
+
+
+        Gson gson = new Gson();
+        String content = null;
+        String newQuoteJson = gson.toJson(new RecentQuotes("George Orwell", content.substring(2,content.length() - 2)));
+        RecentQuotes quotes = gson.fromJson(newQuoteJson, RecentQuotes.class);
+        addQuoteToFile(quotes);
+        return quotes.getText();
+
+
+    }
+
+    private static void addQuoteToFile(RecentQuotes quotes) throws IOException {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+        Reader file = new FileReader("src/main/resources/recentquotes.json");
+
+
+        Type collectionType = new TypeToken<Collection<RecentQuotes>>(){}.getType();
+        Collection<RecentQuotes> numQuotes = gson.fromJson(file, collectionType);
+        numQuotes.add((RecentQuotes) quotes);
+
+        FileWriter fileWriter = new FileWriter("src/main/resources/recentquotes.json");
+        fileWriter.write(gson.toJson(quotes));
+        System.out.println(quotes);
+        fileWriter.close();
+    }
 }

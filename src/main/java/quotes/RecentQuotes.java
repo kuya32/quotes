@@ -1,6 +1,7 @@
 package quotes;
 
 public class RecentQuotes {
+    public static String numQuotes;
     String author;
     String text;
 
@@ -18,6 +19,9 @@ public class RecentQuotes {
         return text + " - " + author;
     }
 
+    public String getText() {
+        return this.text;
+    }
 
 
 }
