@@ -10,10 +10,10 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 
 public class App {
-
-
+    public static ArrayList<StarWarsQuotes> stars = new ArrayList<>();
     public static void main(String[] args) throws IOException {
         try {
             //Ron Swanson Quotes: https://ron-swanson-quotes.herokuapp.com/v2/quotes
@@ -29,16 +29,16 @@ public class App {
                 oneLine = input.readLine();
             }
             input.close();
-            System.out.println(entireStringResponse);
             String starQuote = String.valueOf(entireStringResponse);
 
             Gson gUnit = new Gson();
             StarWarsQuotes vader = gUnit.fromJson(starQuote, StarWarsQuotes.class);
-
+            vader.starToString();
+            stars.add(vader);
             File internetQuote = new File("src/main/resources/internetQuote.json");
             internetQuote.createNewFile();
             FileWriter dataFileWriter = new FileWriter("src/main/resources/internetQuote.json");
-            gUnit.toJson(vader, dataFileWriter);
+            gUnit.toJson(stars, dataFileWriter);
             dataFileWriter.close();
 
         }
@@ -47,7 +47,7 @@ public class App {
             RecentQuotes quotes = new RecentQuotes("Charles Dickens", "Hello?");
             Reader quoteReader = Files.newBufferedReader(Paths.get("src/main/resources/recentQuotes.json"));
             RecentQuotes[] numQuotes = gson.fromJson(quoteReader, RecentQuotes[].class);
-            System.out.println(quotes.stringify(getRandomNumber(0, 138), numQuotes));
+            System.out.println(quotes.toString(getRandomNumber(0, 138), numQuotes));
         }
 
     }
