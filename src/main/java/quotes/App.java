@@ -23,24 +23,31 @@ public class App {
 
             BufferedReader input = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             String oneLine = input.readLine();
-            StringBuffer entireStringResponse = new StringBuffer();
+            StringBuilder entireStringResponse = new StringBuilder();
             while (oneLine != null) {
                 entireStringResponse.append(oneLine);
                 oneLine = input.readLine();
             }
             input.close();
-            String starQuote = String.valueOf(entireStringResponse);
+            String starQuote = entireStringResponse.toString();
 
             Gson gUnit = new Gson();
             StarWarsQuotes vader = gUnit.fromJson(starQuote, StarWarsQuotes.class);
-            vader.starToString();
             stars.add(vader);
-            File internetQuote = new File("src/main/resources/internetQuote.json");
-            internetQuote.createNewFile();
-            FileWriter dataFileWriter = new FileWriter("src/main/resources/internetQuote.json");
-            gUnit.toJson(stars, dataFileWriter);
-            dataFileWriter.close();
+            System.out.println(vader.starWarsQuote);
 
+            File internetQuote = new File("src/main/resources/internetQuote.json");
+
+            if (!internetQuote.exists()) {
+                internetQuote.createNewFile();
+            }
+            FileWriter dataFileWriter = new FileWriter("src/main/resources/internetQuote.json",
+                    true);
+            BufferedWriter buff = new BufferedWriter(dataFileWriter);
+            buff.write("vader");
+            gUnit.toJson(vader, dataFileWriter);
+            buff.close();
+            dataFileWriter.close();
         }
         catch(Exception e) {
             Gson gson = new Gson();
