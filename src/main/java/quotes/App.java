@@ -3,14 +3,26 @@
  */
 package quotes;
 
+import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.io.*;
+
+import java.lang.reflect.Type;
+import java.net.HttpURLConnection;
+
 import java.net.HttpURLConnection;
 import java.net.URL;
+
 import java.nio.file.Files;
 import java.nio.file.Paths;
+
 import java.util.ArrayList;
+
+import java.net.URL;
+import java.util.Collection;
+
 
 public class App {
     public static ArrayList<StarWarsQuotes> stars = new ArrayList<>();
@@ -56,11 +68,9 @@ public class App {
             RecentQuotes[] numQuotes = gson.fromJson(quoteReader, RecentQuotes[].class);
             System.out.println(quotes.toString(getRandomNumber(0, 138), numQuotes));
         }
-
     }
 
     public static int getRandomNumber(int min, int max) {
         return (int) ((Math.random() * (max - min)) + min);
     }
-
 }

@@ -14,6 +14,7 @@ import java.nio.file.Paths;
 import static org.junit.Assert.*;
 
 public class AppTest {
+    private Object quotesTest;
 
     @Test public void testRecentQuotesOne() throws IOException {
         Gson gson = new Gson();
@@ -32,5 +33,14 @@ public class AppTest {
         int max = 138;
         int random = App.getRandomNumber(min, max);
         assertTrue("Error, random is too high", 139 >= random);
+    }
+  
+    @Test
+    public Object testGetWebQuote() {
+        assertNotNull("Given you have an internet connection, the quote should have text", testGetWebQuote());
+        assertEquals("The author should be George Orwell",
+                "George Orwell",
+                RecentQuotes.numQuotes);
+        return null;
     }
 }
