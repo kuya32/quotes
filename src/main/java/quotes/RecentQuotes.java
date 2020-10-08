@@ -10,9 +10,9 @@ public class RecentQuotes {
         this.text = text;
     }
 
-    public String stringify(int index, RecentQuotes[] array) {
-        String rowling = this.toString(array[index].author, array[index].text.replace('\u201C', ' ').replace('\u201D', ' ').trim());
-        return rowling;
+    public String toString(int index, RecentQuotes[] array) {
+        return this.toString(array[index].author,
+            array[index].text.replace('\u201C', ' ').replace('\u201D', ' ').trim());
     }
 
     public String toString(String text, String author) {
